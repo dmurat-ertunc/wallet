@@ -59,6 +59,7 @@ public class Expense extends BaseEntity {
 //	@ManyToOne	"Çoktan bire": birçok harcama tek bir kullanıcıya bağlanır.
 //	fetch = FetchType.LAZY	Bir harcamayı okuduğunda kullanıcısı hemen yüklenmez. Kodda expense.getUser().getFirstName() gibi kullanıcıya ilk eriştiğin anda yüklenir. Gereksiz sorguları önler. Varsayılan değer EAGER, yani her harcamayla birlikte kullanıcı da hemen yüklenir. Bu yüzden LAZY'yi açıkça yazdık.
 //	optional = false	Kullanıcısı olmayan bir harcamayı Java tarafında kabul etmez.
+//  fetch = FetchType.EAGER  Varsayılan değer EAGER, yani her harcamayla birlikte kullanıcı da hemen yüklenir
 //	@JoinColumn(name = "user_id")	Bağlantıyı tutan kolonun adı user_id olur.
 //	nullable = false	Veritabanında user_id kolonu NOT NULL olur, kolon boş bırakılamaz.
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
