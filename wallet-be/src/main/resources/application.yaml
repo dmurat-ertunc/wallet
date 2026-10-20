@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: wallet
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/wallet_db
+    username: postgres
+    password: 123456
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+#      none	Hibernate tablolara hiç dokunmaz
+#      validate	Tabloların entity'lerle uyuştuğunu kontrol eder, uyuşmazsa uygulama açılmaz. Hiçbir şeyi değiştirmez
+#      update	Eksik tablo ve kolonları ekler (şu anki ayar)
+#      create	Her açılışta tabloları silip yeniden oluşturur. Tüm veri gider
+#      create-drop	create gibidir, ek olarak uygulama kapanınca tabloları siler. Testlerde kullanılır
+      ddl-auto: update
+    # bu sorguları konsola yazdırır, ama tek uzun satır olarak:
+    show-sql: true
+    properties:
+      hibernate:
+        #  aynı sorguyu satırlara bölüp girintili yazar, böylece okuması kolaylaşır:
+        format_sql: true

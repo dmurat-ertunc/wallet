@@ -1,0 +1,21 @@
+package com.fin.wallet.entity.enums;
+
+public enum ExpenseCategory {
+	FOOD,
+	GROCERIES,
+	TRANSPORTATION,
+	HOUSING,
+	UTILITIES,
+	HEALTH,
+	EDUCATION,
+	ENTERTAINMENT,
+	SHOPPING,
+	CLOTHING,
+	TRAVEL,
+	SUBSCRIPTIONS,
+	PERSONAL_CARE,
+	GIFTS,
+	INSURANCE,
+	TAXES,
+	OTHER
+}

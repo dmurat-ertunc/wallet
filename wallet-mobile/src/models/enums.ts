@@ -1,0 +1,44 @@
+// Mirrors the enums in wallet-be: com.fin.wallet.entity.enums
+
+export enum Currency {
+  TRY = 'TRY',
+  USD = 'USD',
+  EUR = 'EUR',
+  GBP = 'GBP',
+}
+
+export enum ExpenseCategory {
+  FOOD = 'FOOD',
+  GROCERIES = 'GROCERIES',
+  TRANSPORTATION = 'TRANSPORTATION',
+  HOUSING = 'HOUSING',
+  UTILITIES = 'UTILITIES',
+  HEALTH = 'HEALTH',
+  EDUCATION = 'EDUCATION',
+  ENTERTAINMENT = 'ENTERTAINMENT',
+  SHOPPING = 'SHOPPING',
+  CLOTHING = 'CLOTHING',
+  TRAVEL = 'TRAVEL',
+  SUBSCRIPTIONS = 'SUBSCRIPTIONS',
+  PERSONAL_CARE = 'PERSONAL_CARE',
+  GIFTS = 'GIFTS',
+  INSURANCE = 'INSURANCE',
+  TAXES = 'TAXES',
+  OTHER = 'OTHER',
+}
+
+export enum PaymentMethod {
+  CASH = 'CASH',
+  CREDIT_CARD = 'CREDIT_CARD',
+  DEBIT_CARD = 'DEBIT_CARD',
+  BANK_TRANSFER = 'BANK_TRANSFER',
+  MOBILE_PAYMENT = 'MOBILE_PAYMENT',
+  OTHER = 'OTHER',
+}
+
+export enum RecurrencePeriod {
+  DAILY = 'DAILY',
+  WEEKLY = 'WEEKLY',
+  MONTHLY = 'MONTHLY',
+  YEARLY = 'YEARLY',
+}
