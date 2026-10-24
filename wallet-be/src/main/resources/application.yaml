@@ -8,6 +8,11 @@ spring:
     password: 123456
     driver-class-name: org.postgresql.Driver
 
+  mvc:
+    format:
+      # Query params like ?expenseDate.greaterThan=2026-10-01 are parsed as ISO dates
+      date: iso
+
   jpa:
     hibernate:
 #      none	Hibernate tablolara hiç dokunmaz

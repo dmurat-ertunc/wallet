@@ -1,7 +1,9 @@
-import { ExpenseCategory, PaymentMethod, RecurrencePeriod } from '@/models';
+import { ExpenseCategory, PaymentMethod } from '@/models';
 
-// Turkish display names for enum values shown in the UI
+// Enum değerlerinin arayüzde gösterilen Türkçe karşılıkları.
+// Record<Enum, string> tipi sayesinde enum'a yeni bir değer eklenip burada karşılığı yazılmazsa TypeScript hata verir.
 
+// Kategori adları, ör. GROCERIES → "Market"
 export const CategoryLabels: Record<ExpenseCategory, string> = {
   [ExpenseCategory.FOOD]: 'Yemek',
   [ExpenseCategory.GROCERIES]: 'Market',
@@ -22,6 +24,7 @@ export const CategoryLabels: Record<ExpenseCategory, string> = {
   [ExpenseCategory.OTHER]: 'Diğer',
 };
 
+// Ödeme yöntemi adları, ör. CASH → "Nakit"
 export const PaymentMethodLabels: Record<PaymentMethod, string> = {
   [PaymentMethod.CASH]: 'Nakit',
   [PaymentMethod.CREDIT_CARD]: 'Kredi Kartı',
@@ -29,11 +32,4 @@ export const PaymentMethodLabels: Record<PaymentMethod, string> = {
   [PaymentMethod.BANK_TRANSFER]: 'Havale / EFT',
   [PaymentMethod.MOBILE_PAYMENT]: 'Mobil Ödeme',
   [PaymentMethod.OTHER]: 'Diğer',
-};
-
-export const RecurrencePeriodLabels: Record<RecurrencePeriod, string> = {
-  [RecurrencePeriod.DAILY]: 'Günlük',
-  [RecurrencePeriod.WEEKLY]: 'Haftalık',
-  [RecurrencePeriod.MONTHLY]: 'Aylık',
-  [RecurrencePeriod.YEARLY]: 'Yıllık',
 };

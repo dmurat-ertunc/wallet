@@ -1,5 +1,8 @@
-// Mirrors the enums in wallet-be: com.fin.wallet.entity.enums
+// Backend'deki enum'ların aynısı: wallet-be → com.fin.wallet.entity.enums
+// Değerler İngilizce ve büyük harflidir çünkü backend bunları böyle bekler.
+// Ekranda görünen Türkçe karşılıklar constants/labels.ts içindedir.
 
+// Para birimleri
 export enum Currency {
   TRY = 'TRY',
   USD = 'USD',
@@ -7,6 +10,7 @@ export enum Currency {
   GBP = 'GBP',
 }
 
+// Harcama kategorileri
 export enum ExpenseCategory {
   FOOD = 'FOOD',
   GROCERIES = 'GROCERIES',
@@ -27,6 +31,7 @@ export enum ExpenseCategory {
   OTHER = 'OTHER',
 }
 
+// Ödeme yöntemleri
 export enum PaymentMethod {
   CASH = 'CASH',
   CREDIT_CARD = 'CREDIT_CARD',
@@ -34,11 +39,4 @@ export enum PaymentMethod {
   BANK_TRANSFER = 'BANK_TRANSFER',
   MOBILE_PAYMENT = 'MOBILE_PAYMENT',
   OTHER = 'OTHER',
-}
-
-export enum RecurrencePeriod {
-  DAILY = 'DAILY',
-  WEEKLY = 'WEEKLY',
-  MONTHLY = 'MONTHLY',
-  YEARLY = 'YEARLY',
 }
