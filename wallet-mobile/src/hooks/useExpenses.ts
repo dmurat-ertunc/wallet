@@ -3,6 +3,8 @@ import { useCallback, useState } from 'react';
 
 import { Expense } from '@/models';
 import { expenseService } from '@/services';
+import { Alert } from 'react-native';
+
 
 // Harcama listesini backend'den çeker ve ekranın ihtiyaç duyduğu durumu döndürür.
 // Kullanan sayfa sadece bu değerlere bakarak ne çizeceğine karar verir.
@@ -80,5 +82,17 @@ export function useExpenses() {
     }
   }, []);
 
-  return { expenses, loading, error, refresh, deleteExpense, deleteError };
+
+  const editExpense = useCallback(async (id: number) => {
+    setDeleteError(null);
+    try {
+      console.log("güncellendi")
+      return true;
+    } catch (e) {
+      setDeleteError(e instanceof Error ? e.message : 'Harcama silinemedi');
+      return false;
+    }
+  }, []);
+
+  return { expenses, loading, error, refresh, deleteExpense, editExpense, deleteError };
 }

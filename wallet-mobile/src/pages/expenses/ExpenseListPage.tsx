@@ -11,7 +11,7 @@ import { useExpenses } from '@/hooks';
 export function ExpenseListPage() {
   // expenses: liste, loading: istek sürüyor mu, error: hata mesajı, refresh: listeyi yeniden çek,
   // deleteExpense: bir harcamayı sil, deleteError: silme başarısız olursa mesaj
-  const { expenses, loading, error, refresh, deleteExpense, deleteError } = useExpenses();
+  const { expenses, loading, error, refresh, deleteExpense, editExpense, deleteError } = useExpenses();
 
   // İlk yükleme: henüz hiç veri yokken ortada dönen bir yükleniyor simgesi göster
   if (loading && expenses.length === 0) {
@@ -43,7 +43,8 @@ export function ExpenseListPage() {
           // Her satır için benzersiz anahtar; React hangi satırın değiştiğini bununla anlar
           keyExtractor={(item) => String(item.id)}
           // Her satır sola kaydırılınca Düzenle / Sil butonlarını gösterir; Sil o harcamayı siler
-          renderItem={({ item }) => <SwipeableExpenseCard expense={item} onDelete={() => deleteExpense(item.id)} />}
+          // SwipeableExpenseCard a parametre olarak aşaıdakileri gönderiyoruz (expense ve onDelete)
+          renderItem={({ item }) => <SwipeableExpenseCard expense={item} onDelete={() => deleteExpense(item.id)} onEdit={() => editExpense(item.id)} />}
           contentContainerStyle={styles.list}
           // Listeyi aşağı çekince yenileme (pull to refresh)
           refreshing={loading}

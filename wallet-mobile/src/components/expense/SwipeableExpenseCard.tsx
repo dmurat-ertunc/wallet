@@ -14,14 +14,16 @@ type SwipeableExpenseCardProps = {
   expense: Expense;
   // Sil'e basınca çağrılır; silindiyse true, silinemediyse false döner
   onDelete: () => Promise<boolean>;
+  onEdit: () => Promise<boolean>;
 };
 
 // Sola kaydırılınca sağ tarafta "Düzenle" ve "Sil" butonlarını gösteren harcama kartı.
 // Sil harcamayı siler; Düzenle şimdilik sadece satırı geri kapatır, düzenleme ileride buraya bağlanacak.
-export function SwipeableExpenseCard({ expense, onDelete }: SwipeableExpenseCardProps) {
+export function SwipeableExpenseCard({ expense, onDelete, onEdit }: SwipeableExpenseCardProps) {
   const theme = useTheme();
   // Silme isteği sürüyor mu; true iken Sil butonunda dönen simge görünür ve butonlara basılamaz
   const [deleting, setDeleting] = useState(false);
+  const [editing, setEditing] = useState(false);
 
   async function handleDelete(swipeable: SwipeableMethods) {
     setDeleting(true);
@@ -34,12 +36,17 @@ export function SwipeableExpenseCard({ expense, onDelete }: SwipeableExpenseCard
     }
   }
 
+  async function handleEdit(swipeable: SwipeableMethods) {
+    setEditing(true);
+    const edited = await onEdit();
+  }
+
   // Sağda açılan butonlar. swipeable: satırı kodla kapatmak gibi işlemler için kütüphanenin verdiği metotlar
   function renderRightActions(_progress: unknown, _translation: unknown, swipeable: SwipeableMethods) {
     return (
       <View style={styles.actions}>
         <Pressable
-          onPress={() => swipeable.close()}
+          onPress={() => handleEdit(swipeable)}
           disabled={deleting}
           accessibilityRole="button"
           accessibilityLabel="Düzenle"
