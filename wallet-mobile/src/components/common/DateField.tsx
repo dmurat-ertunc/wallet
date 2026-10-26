@@ -1,5 +1,5 @@
 import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
-import { Platform, Pressable, StyleSheet, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 
 import { FontSize, Radius, Spacing } from '@/constants';
 import { useTheme } from '@/hooks';
@@ -15,16 +15,18 @@ type DateFieldProps = {
   // Kullanıcı yeni bir tarih seçince çağrılır
   onChange: (date: Date) => void;
   error?: string;
+  // Sayfaya özel ekstra stil (alanı saran kutuya uygulanır)
+  style?: StyleProp<ViewStyle>;
 };
 
 // Etiketli tarih seçici. Platforma göre farklı çalışır.
-export function DateField({ label, value, onChange, error }: DateFieldProps) {
+export function DateField({ label, value, onChange, error, style }: DateFieldProps) {
   const theme = useTheme();
 
   // iOS: seçici sayfanın içinde küçük (compact) bir düğme olarak çizilir, dokununca takvim açılır
   if (Platform.OS === 'ios') {
     return (
-      <FormField label={label} error={error}>
+      <FormField label={label} error={error} style={style}>
         <View style={styles.iosRow}>
           <DateTimePicker
             value={value}
@@ -49,7 +51,7 @@ export function DateField({ label, value, onChange, error }: DateFieldProps) {
   };
 
   return (
-    <FormField label={label} error={error}>
+    <FormField label={label} error={error} style={style}>
       <Pressable
         onPress={openPicker}
         accessibilityRole="button"
@@ -69,7 +71,9 @@ const styles = StyleSheet.create({
   iosRow: { alignItems: 'flex-start' },
   // AppInput ile aynı görünüm, böylece form alanları tutarlı olur
   input: {
-    borderWidth: 1,
+    minHeight: 50,
+    justifyContent: 'center',
+    borderWidth: 1.5,
     borderRadius: Radius.md,
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.sm + Spacing.xs,

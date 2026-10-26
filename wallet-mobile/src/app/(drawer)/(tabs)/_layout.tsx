@@ -16,6 +16,12 @@ export default function TabsLayout() {
       screenOptions={{
         tabBarActiveTintColor: theme.primary,
         tabBarInactiveTintColor: theme.textSecondary,
+        // Sekme çubuğu kart renginde, üstünde ince bir çizgi
+        tabBarStyle: { backgroundColor: theme.surface, borderTopColor: theme.border },
+        tabBarLabelStyle: { fontWeight: '600' },
+        // Başlık çubuğu alt çizgisiz ve kalın yazılı (kök Stack ile aynı görünüm)
+        headerShadowVisible: false,
+        headerTitleStyle: { fontWeight: '700' },
         // Başlığın sol tarafına yan menüyü açan butonu koyar
         headerLeft: () => <DrawerToggleButton tintColor={theme.text} accessibilityLabel="Menüyü aç" />,
       }}>

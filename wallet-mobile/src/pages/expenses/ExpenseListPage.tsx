@@ -9,8 +9,9 @@ import { useExpenses } from '@/hooks';
 // Harcamalar sekmesi: backend'den gelen harcamaları liste halinde gösterir.
 // Veriyi kendisi çekmez; useExpenses hook'unun döndürdüğü değerlere göre ne çizeceğine karar verir.
 export function ExpenseListPage() {
-  // expenses: liste, loading: istek sürüyor mu, error: hata mesajı, refresh: listeyi yeniden çek
-  const { expenses, loading, error, refresh } = useExpenses();
+  // expenses: liste, loading: istek sürüyor mu, error: hata mesajı, refresh: listeyi yeniden çek,
+  // deleteExpense: bir harcamayı sil, deleteError: silme başarısız olursa mesaj
+  const { expenses, loading, error, refresh, deleteExpense, deleteError } = useExpenses();
 
   // İlk yükleme: henüz hiç veri yokken ortada dönen bir yükleniyor simgesi göster
   if (loading && expenses.length === 0) {
@@ -23,6 +24,12 @@ export function ExpenseListPage() {
 
   return (
     <Screen>
+      {/* Silme başarısız olursa liste gizlenmez, mesaj listenin üstünde görünür */}
+      {deleteError ? (
+        <AppText color="danger" style={styles.deleteError}>
+          {deleteError}
+        </AppText>
+      ) : null}
       {error ? (
         // Hata varsa mesaj ve "Tekrar dene" butonu göster
         <View style={styles.center}>
@@ -35,8 +42,8 @@ export function ExpenseListPage() {
           data={expenses}
           // Her satır için benzersiz anahtar; React hangi satırın değiştiğini bununla anlar
           keyExtractor={(item) => String(item.id)}
-          // Her satır sola kaydırılınca Düzenle / Sil butonlarını gösterir
-          renderItem={({ item }) => <SwipeableExpenseCard expense={item} />}
+          // Her satır sola kaydırılınca Düzenle / Sil butonlarını gösterir; Sil o harcamayı siler
+          renderItem={({ item }) => <SwipeableExpenseCard expense={item} onDelete={() => deleteExpense(item.id)} />}
           contentContainerStyle={styles.list}
           // Listeyi aşağı çekince yenileme (pull to refresh)
           refreshing={loading}
@@ -61,4 +68,5 @@ const styles = StyleSheet.create({
   // Kartlar arasında boşluk ve listenin altında butona yer
   list: { gap: Spacing.sm, paddingBottom: Spacing.md },
   empty: { textAlign: 'center', marginTop: Spacing.xl },
+  deleteError: { textAlign: 'center', marginBottom: Spacing.sm },
 });

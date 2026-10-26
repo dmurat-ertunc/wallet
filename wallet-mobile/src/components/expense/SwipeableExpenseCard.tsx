@@ -1,5 +1,6 @@
 import { SymbolView } from 'expo-symbols';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { useState } from 'react';
+import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 import ReanimatedSwipeable, { type SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
 
 import { AppText } from '@/components/common';
@@ -9,10 +10,29 @@ import { Expense } from '@/models';
 
 import { ExpenseCard } from './ExpenseCard';
 
+type SwipeableExpenseCardProps = {
+  expense: Expense;
+  // Sil'e basınca çağrılır; silindiyse true, silinemediyse false döner
+  onDelete: () => Promise<boolean>;
+};
+
 // Sola kaydırılınca sağ tarafta "Düzenle" ve "Sil" butonlarını gösteren harcama kartı.
-// Şimdilik butonlar sadece satırı geri kapatır; düzenleme ve silme işlemleri ileride buraya bağlanacak.
-export function SwipeableExpenseCard({ expense }: { expense: Expense }) {
+// Sil harcamayı siler; Düzenle şimdilik sadece satırı geri kapatır, düzenleme ileride buraya bağlanacak.
+export function SwipeableExpenseCard({ expense, onDelete }: SwipeableExpenseCardProps) {
   const theme = useTheme();
+  // Silme isteği sürüyor mu; true iken Sil butonunda dönen simge görünür ve butonlara basılamaz
+  const [deleting, setDeleting] = useState(false);
+
+  async function handleDelete(swipeable: SwipeableMethods) {
+    setDeleting(true);
+    const deleted = await onDelete();
+    // Başarılıysa kart listeden kalkar, yapacak bir şey yok.
+    // Başarısızsa butonu eski haline getir ve satırı kapat; hata mesajı listenin üstünde gösterilir.
+    if (!deleted) {
+      setDeleting(false);
+      swipeable.close();
+    }
+  }
 
   // Sağda açılan butonlar. swipeable: satırı kodla kapatmak gibi işlemler için kütüphanenin verdiği metotlar
   function renderRightActions(_progress: unknown, _translation: unknown, swipeable: SwipeableMethods) {
@@ -20,23 +40,35 @@ export function SwipeableExpenseCard({ expense }: { expense: Expense }) {
       <View style={styles.actions}>
         <Pressable
           onPress={() => swipeable.close()}
+          disabled={deleting}
           accessibilityRole="button"
           accessibilityLabel="Düzenle"
-          style={[styles.action, { backgroundColor: theme.primary }]}>
+          style={[styles.action, { backgroundColor: theme.primary, opacity: deleting ? 0.5 : 1 }]}>
           <SymbolView name={{ ios: 'pencil', android: 'edit', web: 'edit' }} size={20} tintColor={theme.onPrimary} />
           <AppText variant="caption" color="onPrimary">
             Düzenle
           </AppText>
         </Pressable>
         <Pressable
-          onPress={() => swipeable.close()}
+          onPress={() => handleDelete(swipeable)}
+          disabled={deleting}
           accessibilityRole="button"
           accessibilityLabel="Sil"
           style={[styles.action, { backgroundColor: theme.danger }]}>
-          <SymbolView name={{ ios: 'trash', android: 'delete', web: 'delete' }} size={20} tintColor={theme.onPrimary} />
-          <AppText variant="caption" color="onPrimary">
-            Sil
-          </AppText>
+          {deleting ? (
+            <ActivityIndicator color={theme.onPrimary} />
+          ) : (
+            <>
+              <SymbolView
+                name={{ ios: 'trash', android: 'delete', web: 'delete' }}
+                size={20}
+                tintColor={theme.onPrimary}
+              />
+              <AppText variant="caption" color="onPrimary">
+                Sil
+              </AppText>
+            </>
+          )}
         </Pressable>
       </View>
     );

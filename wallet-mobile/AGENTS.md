@@ -29,6 +29,15 @@ Run lint and typecheck before declaring any task done.
 - Import `Link`, `router`, and `useLocalSearchParams` from `expo-router`.
 - Docs: https://docs.expo.dev/router/introduction.md
 
+## Design system
+
+All screens share one global design. Build new pages from it instead of styling from scratch:
+
+- Tokens live in `src/constants/theme.ts` (`Colors`, `Spacing`, `Radius`, `FontSize`, `Typography`, `Shadows`). Never hard-code colors or sizes; read colors via `useTheme()`.
+- Navigation (headers, tab bar, drawer, screen background) is themed in `src/app/_layout.tsx` via `useNavigationTheme()`; new routes inherit it automatically.
+- Wrap every page in `<Screen>` (`scroll`, `padded`, `style` props) and use the components in `src/components/common` (`AppText` variants, `AppButton` variants/sizes, `Card`, `AppInput`, `ChipSelect`, `DateField`, `SegmentedControl`).
+- Every common component accepts a `style` prop that is applied last, so page-specific styles go in the page's own `StyleSheet.create` and are passed through `style`.
+
 ## Building with EAS
 
 Use EAS to build, sign, and submit the app in the cloud (`eas build`, `eas submit`) and to ship over-the-air updates (`eas update`) — no local Xcode or Android Studio required. Run EAS CLI as `bunx eas-cli <command>` in Bun projects, or `npx eas-cli@latest <command>` otherwise; substitute that for bare `eas` in docs examples.

@@ -1,6 +1,7 @@
 import { Drawer } from 'expo-router/drawer';
 import { SymbolView } from 'expo-symbols';
 
+import { Radius } from '@/constants';
 import { useTheme } from '@/hooks';
 
 // Tüm uygulamayı saran, soldan açılan yan menü (drawer).
@@ -15,8 +16,12 @@ export default function DrawerLayout() {
       screenOptions={{
         headerShown: false,
         drawerActiveTintColor: theme.primary,
+        // Seçili menü öğesinin zemini ana rengin açık tonu
+        drawerActiveBackgroundColor: theme.primarySoft,
         drawerInactiveTintColor: theme.text,
-        drawerStyle: { backgroundColor: theme.background },
+        drawerStyle: { backgroundColor: theme.surface },
+        drawerItemStyle: { borderRadius: Radius.md },
+        drawerLabelStyle: { fontWeight: '600' },
       }}>
       {/* Yeni menü öğesi eklemek için bu klasöre bir ekran dosyası açıp buraya Drawer.Screen yazılır */}
       <Drawer.Screen

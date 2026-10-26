@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 
 import { Radius, Spacing } from '@/constants';
 import { useTheme } from '@/hooks';
@@ -20,14 +20,16 @@ type ChipSelectProps<T extends string> = {
   value: T | null;
   onChange: (value: T) => void;
   error?: string;
+  // Sayfaya özel ekstra stil (alanı saran kutuya uygulanır)
+  style?: StyleProp<ViewStyle>;
 };
 
 // Kısa bir listeden tek seçim: yan yana dizilen, sığmayınca alt satıra geçen dokunulabilir "çipler"
-export function ChipSelect<T extends string>({ label, options, value, onChange, error }: ChipSelectProps<T>) {
+export function ChipSelect<T extends string>({ label, options, value, onChange, error, style }: ChipSelectProps<T>) {
   const theme = useTheme();
 
   return (
-    <FormField label={label} error={error}>
+    <FormField label={label} error={error} style={style}>
       <View style={styles.row}>
         {options.map((option) => {
           const selected = option.value === value;
@@ -42,13 +44,13 @@ export function ChipSelect<T extends string>({ label, options, value, onChange, 
               style={[
                 styles.chip,
                 {
-                  // Seçiliyse dolu mavi, değilse yüzey rengi
-                  backgroundColor: selected ? theme.primary : theme.surface,
+                  // Seçiliyse açık ana renk zemin ve ana renk çerçeve, değilse yüzey rengi
+                  backgroundColor: selected ? theme.primarySoft : theme.surface,
                   // Seçili değilken hata varsa çerçeve kırmızı olur
                   borderColor: selected ? theme.primary : error ? theme.danger : theme.border,
                 },
               ]}>
-              <AppText variant="caption" color={selected ? 'onPrimary' : 'text'}>
+              <AppText variant="label" color={selected ? 'primary' : 'text'}>
                 {option.label}
               </AppText>
             </Pressable>
@@ -62,9 +64,10 @@ export function ChipSelect<T extends string>({ label, options, value, onChange, 
 const styles = StyleSheet.create({
   // flexWrap: 'wrap' → çipler satıra sığmayınca alt satıra geçer
   row: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm },
+  // Hap şeklinde çip (tam yuvarlak köşeler)
   chip: {
-    borderWidth: 1,
-    borderRadius: Radius.lg,
+    borderWidth: 1.5,
+    borderRadius: Radius.full,
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.sm,
   },

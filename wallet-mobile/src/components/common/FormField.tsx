@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 
 import { Spacing } from '@/constants';
 
@@ -14,14 +14,16 @@ type FormFieldProps = {
   optional?: boolean;
   // Asıl giriş bileşeni (TextInput, çipler, tarih seçici...)
   children: ReactNode;
+  // Sayfaya özel ekstra stil (alanı saran kutuya uygulanır)
+  style?: StyleProp<ViewStyle>;
 };
 
 // Tüm form alanlarının ortak iskeleti: üstte etiket, ortada giriş, altta hata mesajı.
 // AppInput, ChipSelect ve DateField bunu kullandığı için hepsi aynı görünür.
-export function FormField({ label, error, optional = false, children }: FormFieldProps) {
+export function FormField({ label, error, optional = false, children, style }: FormFieldProps) {
   return (
-    <View style={styles.field}>
-      <AppText variant="caption" color="textSecondary" style={styles.label}>
+    <View style={[styles.field, style]}>
+      <AppText variant="label" color="textSecondary">
         {label}
         {optional ? ' (isteğe bağlı)' : ''}
       </AppText>
@@ -37,7 +39,6 @@ export function FormField({ label, error, optional = false, children }: FormFiel
 }
 
 const styles = StyleSheet.create({
-  // Etiket, giriş ve hata arasında 4 piksel boşluk
-  field: { gap: Spacing.xs },
-  label: { fontWeight: '600' },
+  // Etiket, giriş ve hata arasında 8 piksel boşluk
+  field: { gap: Spacing.sm },
 });

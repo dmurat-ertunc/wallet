@@ -3,6 +3,7 @@
 export * from './AppButton';
 export * from './AppInput';
 export * from './AppText';
+export * from './Card';
 export * from './ChipSelect';
 export * from './DateField';
 export * from './FormField';
