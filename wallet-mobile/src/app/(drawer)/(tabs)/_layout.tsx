@@ -2,6 +2,8 @@ import { Tabs } from 'expo-router';
 import { DrawerToggleButton } from 'expo-router/drawer';
 import { SymbolView } from 'expo-symbols';
 
+import { LogoutButton } from '@/components/auth';
+import { Spacing } from '@/constants';
 import { useTheme } from '@/hooks';
 
 // Ekranın altındaki sekme çubuğu (bottom tabs).
@@ -24,11 +26,14 @@ export default function TabsLayout() {
         headerTitleStyle: { fontWeight: '700' },
         // Başlığın sol tarafına yan menüyü açan butonu koyar
         headerLeft: () => <DrawerToggleButton tintColor={theme.text} accessibilityLabel="Menüyü aç" />,
+        // Başlığın sağ üst köşesine çıkış butonu; sağ kenardan biraz içeride dursun
+        headerRight: () => <LogoutButton />,
+        headerRightContainerStyle: { paddingRight: Spacing.md },
       }}>
       {/* Yeni sekme eklemek için (tabs) klasörüne dosya açıp buraya Tabs.Screen yazılır */}
       <Tabs.Screen
-        // index.tsx → uygulama açılınca ilk görünen sekme (adres: /)
-        name="index"
+        // home.tsx → girişten sonra ilk görünen sekme (adres: /home); listedeki ilk sekme varsayılan sekmedir
+        name="home"
         options={{
           title: 'Ana Sayfa',
           tabBarIcon: ({ color, size }) => (

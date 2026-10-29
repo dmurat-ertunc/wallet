@@ -3,11 +3,13 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
+import { LogoutButton } from '@/components/auth';
 import { useNavigationTheme, useTheme } from '@/hooks';
 
 // Kök gezinme yapısı (root layout). Uygulama açılınca ilk çalışan dosya budur.
 // src/app içindeki dosyalar sadece rota tanımıdır; ekranların asıl kodu src/pages içindedir.
-// (drawer) grubu yan menüyü ve onun içindeki alt sekmeleri tutar; modallar ikisinin de üstünde açılır.
+// Açılışta önce giriş ekranı (login) gelir; (drawer) grubu yan menüyü ve onun içindeki alt sekmeleri tutar;
+// modallar ikisinin de üstünde açılır.
 export default function RootLayout() {
   // Başlık çubuğu, arka plan gibi gezinme renkleri theme.ts'ten üretilir
   const navigationTheme = useNavigationTheme();
@@ -24,7 +26,13 @@ export default function RootLayout() {
             headerShadowVisible: false,
             headerTitleStyle: styles.headerTitle,
             contentStyle: { backgroundColor: theme.background },
+            // Başlığı görünen her Stack ekranında (ör. Yeni Harcama) sağ üstte çıkış butonu.
+            // Başlığı gizli olan ekranlarda (login, sekmeler) bu ayar etkisizdir; sekmeler kendi başlıklarında gösterir.
+            headerRight: () => <LogoutButton />,
           }}>
+          {/* index: açılışta kullanıcıyı yönlendiren boş rota; login: giriş ekranı (kendi tasarımı olduğu için başlıksız) */}
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="login" options={{ headerShown: false }} />
           <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
           <Stack.Screen name="expenses/new" options={{ title: 'Yeni Harcama', presentation: 'modal' }} />
         </Stack>

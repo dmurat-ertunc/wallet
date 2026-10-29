@@ -32,6 +32,13 @@ public class User extends BaseEntity {
 	@Column(name = "last_name", nullable = false, length = 50)
 	private String lastName;
 
+	// Giriş için kullanılacak benzersiz kullanıcı adı.
+	// Şimdilik boş bırakılabilir: tabloda zaten kayıtlı kullanıcılar var ve ddl-auto: update,
+	// dolu bir tabloya varsayılan değeri olmayan NOT NULL kolon ekleyemez. Mevcut kayıtlara
+	// kullanıcı adı verildikten sonra nullable = false yapılabilir.
+	@Column(name = "user_name", unique = true, length = 50)
+	private String userName;
+
 	@Column(name = "email", nullable = false, unique = true, length = 100)
 	private String email;
 

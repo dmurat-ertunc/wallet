@@ -6,6 +6,8 @@ export interface User {
   id: number;
   firstName: string;
   lastName: string;
+  // Giriş için kullanılan benzersiz kullanıcı adı; eski kayıtlarda henüz boş olabilir
+  userName?: string;
   email: string;
   // "?" alanın isteğe bağlı olduğunu gösterir
   phoneNumber?: string;
