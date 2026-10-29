@@ -47,6 +47,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
 
 //        request: Gelen istek. Adresi, başlıkları ve gövdesi bunun içinde.
+//        request.getMethod()	"GET"
+//        request.getRequestURI()	"/api/expenses"
+//        request.getParameter("page")	"0"
+//        request.getHeader("Authorization")	"Bearer eyJhbGci..."
 //        response: Gidecek cevap. Biz burada dokunmuyoruz.
 //        filterChain: Sıradaki filtrelerin listesi. İsteği bir sonraki kontrol noktasına geçirmek için kullanılıyor.
 //        throws ...: filterChain.doFilter bu iki hatayı fırlatabildiği için imzada yazmak zorundayız.

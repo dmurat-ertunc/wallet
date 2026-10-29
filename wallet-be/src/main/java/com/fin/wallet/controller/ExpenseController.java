@@ -6,6 +6,7 @@ import com.fin.wallet.exception.BadRequestException;
 import com.fin.wallet.exception.ResourceNotFoundException;
 import com.fin.wallet.service.ExpenseService;
 import com.fin.wallet.service.query.ExpenseQueryService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -72,8 +73,11 @@ public class ExpenseController {
 	// Paging and sorting: ?page=0&size=20&sort=amount,desc (default: newest expenseDate first)
 	@GetMapping
 	public ResponseEntity<List<ExpenseDTO>> getAllExpenses(
-			ExpenseCriteria criteria,
-			@PageableDefault(size = 20, sort = "expenseDate", direction = Sort.Direction.DESC) Pageable pageable) {
+            ExpenseCriteria criteria,
+            @PageableDefault(size = 20, sort = "expenseDate", direction = Sort.Direction.DESC) Pageable pageable, HttpServletRequest request) {
+		if (request.getRequestURI() != null){
+			//HttpServletRequest request ile isteiği yakalıyabiliyoruz bu bir denemeydi
+		}
 		log.debug("REST request to get Expenses by criteria : {}", criteria);
 		Page<ExpenseDTO> page = expenseQueryService.findByCriteria(criteria, pageable);
 		return ResponseEntity.ok()
