@@ -22,6 +22,3 @@ export const API_BASE_URL = resolveApiBaseUrl();
 
 // Bir isteğin en fazla bekleneceği süre (milisaniye); dolarsa "Sunucu yanıt vermedi" hatası verilir
 export const REQUEST_TIMEOUT_MS = 15000;
-
-// Geçici: login olmadığı için her harcama bu kullanıcıya kaydediliyor. Bu kullanıcı veritabanındaki users tablosunda olmalı.
-export const CURRENT_USER_ID = Number(process.env.EXPO_PUBLIC_USER_ID ?? 1);

@@ -51,7 +51,7 @@ public class ExpenseDTO implements Serializable {
 	@NotNull
 	private LocalDate expenseDate;
 
-	@NotNull
+	// Set by the server from the JWT; ignored when sent by the client
 	private Long userId;
 
 	// Set by the server; ignored when sent by the client

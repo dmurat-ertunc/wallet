@@ -91,7 +91,7 @@ export function validateExpenseForm(values: ExpenseFormValues): ExpenseFormError
 
 // Form verisini backend'in beklediği JSON gövdesine çevirir.
 // Sadece validateExpenseForm hata döndürmediyse çağrılmalı.
-export function toExpenseRequest(values: ExpenseFormValues, userId: number): ExpenseRequest {
+export function toExpenseRequest(values: ExpenseFormValues): ExpenseRequest {
   const description = values.description.trim();
   return {
     title: values.title.trim(),
@@ -104,6 +104,5 @@ export function toExpenseRequest(values: ExpenseFormValues, userId: number): Exp
     expenseDate: toIsoDate(values.expenseDate),
     // Boş açıklama boş metin yerine null olarak gönderilir
     description: description || null,
-    userId,
   };
 }

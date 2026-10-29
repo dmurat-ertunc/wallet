@@ -14,9 +14,9 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * Filters for GET /api/expenses. Every field is optional, examples:
+ * Filters for GET /api/expenses. Every field is optional. There is no user filter:
+ * results are always limited to the user in the JWT (see ExpenseQueryService). Examples:
  * <pre>
- * ?userId.equals=1
  * ?category.in=FOOD,GROCERIES
  * ?amount.greaterThanOrEqual=100&amp;amount.lessThan=500
  * ?expenseDate.greaterThanOrEqual=2026-10-01&amp;expenseDate.lessThanOrEqual=2026-10-31
@@ -54,7 +54,5 @@ public class ExpenseCriteria {
 	private PaymentMethodFilter paymentMethod;
 
 	private LocalDateFilter expenseDate;
-
-	private LongFilter userId;
 
 }

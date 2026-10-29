@@ -18,6 +18,19 @@ export class ApiError extends Error {
 // Kullanılan HTTP metotları
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
+// Oturum açıkken her isteğe eklenen JWT; AuthProvider giriş/çıkışta ve açılışta ayarlar
+let authToken: string | null = null;
+// Token'lı bir istek 401 dönünce çağrılır (token'ın süresi dolmuş veya geçersiz); AuthProvider oturumu kapatır
+let unauthorizedHandler: (() => void) | null = null;
+
+export function setAuthToken(token: string | null) {
+  authToken = token;
+}
+
+export function setUnauthorizedHandler(handler: (() => void) | null) {
+  unauthorizedHandler = handler;
+}
+
 // Backend'in hata cevaplarının şekli (Spring ProblemDetail, bkz. backend'deki GlobalExceptionHandler)
 type ProblemDetail = {
   // Genel hata açıklaması
@@ -44,15 +57,30 @@ async function request<T>(method: HttpMethod, path: string, body?: unknown): Pro
   // AbortController isteği yarıda kesmeye yarar; süre dolunca abort() çağrılır
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  // İstek sürerken çıkış yapılırsa değişebileceği için gönderilen token'ı baştan sabitle
+  const token = authToken;
+
+  const headers: Record<string, string> = { 'Content-Type': 'application/json', Accept: 'application/json' };
+  // Backend'deki JwtAuthenticationFilter bu başlığı okur
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
 
   try {
     const response = await fetch(`${API_BASE_URL}${path}`, {
       method,
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      headers,
       // GET ve DELETE'te gövde yok; diğerlerinde nesne JSON metnine çevrilir
       body: body === undefined ? undefined : JSON.stringify(body),
       signal: controller.signal,
     });
+
+    // Token gönderildiği halde 401: oturum geçersiz, kullanıcı giriş ekranına gönderilir.
+    // Token'sız 401 (ör. login'de yanlış şifre) oturumla ilgili değildir, normal hata olarak döner.
+    if (response.status === 401 && token) {
+      unauthorizedHandler?.();
+      throw new ApiError('Oturumun sona erdi, lütfen tekrar giriş yap', 401);
+    }
 
     // response.ok: durum kodu 200-299 arasındaysa true
     if (!response.ok) {

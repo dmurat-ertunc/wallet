@@ -1,29 +1,22 @@
-import { router } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { Pressable, StyleSheet } from 'react-native';
 
 import { AppText } from '@/components/common';
 import { Radius, Spacing } from '@/constants';
+import { useAuth } from '@/context';
 import { useTheme } from '@/hooks';
 
 // Başlık çubuğunun sağ üst köşesindeki "Çıkış" butonu.
 // Tek tek sayfalara değil, gezinme ayarlarına (headerRight) eklenir; böylece başlığı olan her sayfada görünür.
-// Şimdilik oturum olmadığı için sadece giriş ekranına döner; login eklendiğinde burada oturum da kapatılacak.
+// Sadece token'ı siler; yönlendirme yapmaz. Token gidince kök layout'taki Stack.Protected korumalı ekranları
+// (açık modallar dahil) geçmişten siler ve kullanıcıyı giriş ekranına gönderir, geri tuşu da içeri dönemez.
 export function LogoutButton() {
   const theme = useTheme();
-
-  function logout() {
-    // Üstte açık bir modal varsa (ör. Yeni Harcama) önce kapat; böylece geçmişte hiçbir ekran kalmaz
-    if (router.canDismiss()) {
-      router.dismissAll();
-    }
-    // replace: giriş ekranında geri tuşu uygulamanın içine dönmez
-    router.replace('/login');
-  }
+  const { signOut } = useAuth();
 
   return (
     <Pressable
-      onPress={logout}
+      onPress={signOut}
       accessibilityRole="button"
       accessibilityLabel="Çıkış yap"
       hitSlop={8}

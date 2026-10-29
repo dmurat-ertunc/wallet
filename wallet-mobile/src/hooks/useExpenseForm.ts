@@ -1,6 +1,5 @@
 import { useState } from 'react';
 
-import { CURRENT_USER_ID } from '@/constants';
 import { Expense } from '@/models';
 import { ApiError, expenseService } from '@/services';
 import {
@@ -45,8 +44,8 @@ export function useExpenseForm(onSaved: (expense: Expense) => void) {
     setSubmitting(true);
     setSubmitError(null);
     try {
-      // 3. Form verisini backend biçimine çevir ve gönder
-      const saved = await expenseService.create(toExpenseRequest(values, CURRENT_USER_ID));
+      // 3. Form verisini backend biçimine çevir ve gönder; harcamanın sahibini backend token'dan belirler
+      const saved = await expenseService.create(toExpenseRequest(values));
       // 4. Başarılı: dışarıdan verilen fonksiyonu çağır
       onSaved(saved);
     } catch (e) {

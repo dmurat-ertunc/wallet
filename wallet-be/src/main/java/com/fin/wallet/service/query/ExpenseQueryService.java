@@ -7,6 +7,7 @@ import com.fin.wallet.entity.Expense;
 import com.fin.wallet.entity.Expense_;
 import com.fin.wallet.mapper.ExpenseMapper;
 import com.fin.wallet.repository.ExpenseRepository;
+import com.fin.wallet.security.CurrentUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -15,7 +16,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-// Expense_ and BaseEntity_ are JPA metamodel classes generated at compile time by hibernate-processor
+// Expense_ and BaseEntity_ are JPA metamodel classes generated at compile time by hibernate-processor.
+// Results are always limited to the user in the JWT, whatever filters the client sends.
 @Slf4j
 @Service
 @Transactional(readOnly = true)
@@ -26,14 +28,25 @@ public class ExpenseQueryService extends QueryService<Expense> {
 
 	private final ExpenseMapper expenseMapper;
 
+	private final CurrentUserService currentUserService;
+
 	public Page<ExpenseDTO> findByCriteria(ExpenseCriteria criteria, Pageable pageable) {
 		log.debug("find by criteria : {}, page: {}", criteria, pageable);
-		return expenseRepository.findAll(createSpecification(criteria), pageable).map(expenseMapper::toDto);
+		return expenseRepository.findAll(createOwnSpecification(criteria), pageable).map(expenseMapper::toDto);
 	}
 
 	public long countByCriteria(ExpenseCriteria criteria) {
 		log.debug("count by criteria : {}", criteria);
-		return expenseRepository.count(createSpecification(criteria));
+		return expenseRepository.count(createOwnSpecification(criteria));
+	}
+
+	// The client's filters AND "belongs to the current user"
+	private Specification<Expense> createOwnSpecification(ExpenseCriteria criteria) {
+		Long userId = currentUserService.getCurrentUser().getId();
+		// Reads the user_id foreign key directly, no join to the users table
+		Specification<Expense> ownedByCurrentUser =
+				(root, query, cb) -> cb.equal(root.get(Expense_.user).get(BaseEntity_.id), userId);
+		return createSpecification(criteria).and(ownedByCurrentUser);
 	}
 
 	protected Specification<Expense> createSpecification(ExpenseCriteria criteria) {
@@ -64,11 +77,6 @@ public class ExpenseQueryService extends QueryService<Expense> {
 		}
 		if (criteria.getExpenseDate() != null) {
 			spec = spec.and(buildRangeSpecification(criteria.getExpenseDate(), Expense_.expenseDate));
-		}
-		if (criteria.getUserId() != null) {
-			// Reads the user_id foreign key directly, no join to the users table
-			spec = spec.and(buildRangeSpecification(criteria.getUserId(),
-					root -> root.get(Expense_.user).get(BaseEntity_.id)));
 		}
 		return spec;
 	}

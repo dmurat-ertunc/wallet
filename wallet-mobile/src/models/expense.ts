@@ -14,7 +14,7 @@ export interface Expense {
   paymentMethod: PaymentMethod;
   // Harcamanın yapıldığı gün, ör. "2026-10-24"
   expenseDate: string;
-  // Harcamanın sahibi olan kullanıcının id'si
+  // Harcamanın sahibi olan kullanıcının id'si; backend token'dan belirler
   userId: number;
   // Kaydın oluşturulma ve son güncellenme zamanı (sunucu doldurur)
   createdAt: string;
@@ -22,5 +22,6 @@ export interface Expense {
 }
 
 // Harcama eklerken veya güncellerken gönderilen gövde.
-// Omit: Expense'ten bu üç alanı çıkarır; id ve zaman bilgilerini sunucu belirlediği için gönderilmezler.
-export type ExpenseRequest = Omit<Expense, 'id' | 'createdAt' | 'updatedAt'>;
+// Omit: Expense'ten bu alanları çıkarır; id, sahip ve zaman bilgilerini sunucu belirlediği için gönderilmezler.
+// Sahip (userId) istekteki token'dan gelir; başkası adına harcama eklenemesin diye istemciden hiç alınmaz.
+export type ExpenseRequest = Omit<Expense, 'id' | 'userId' | 'createdAt' | 'updatedAt'>;
