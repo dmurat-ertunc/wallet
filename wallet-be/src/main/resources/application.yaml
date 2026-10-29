@@ -27,3 +27,13 @@ spring:
       hibernate:
         #  aynı sorguyu satırlara bölüp girintili yazar, böylece okuması kolaylaşır:
         format_sql: true
+
+app:
+  jwt:
+    # Token'ları imzalayan gizli anahtar (Base64, en az 256 bit).
+    # Gerçek ortamda JWT_SECRET ortam değişkeninden gelir; buradaki varsayılan sadece geliştirme içindir.
+    # Terminalde komutu kendin çalıştırıp kendi değerini yapıştır:
+    # [Convert]::ToBase64String((1..32 | ForEach-Object { Get-Random -Maximum 256 }))
+    secret: ${JWT_SECRET:N7LpnYfTv5TAw349yiPcFn8MlnojcKZTjHOPsmdEVfM=}
+    # Token'ın geçerlilik süresi (milisaniye): 86400000 = 24 saat
+    expiration-ms: 86400000

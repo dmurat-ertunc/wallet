@@ -2,6 +2,7 @@ package com.fin.wallet.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,6 +23,12 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(BadRequestException.class)
 	public ProblemDetail handleBadRequest(BadRequestException ex) {
 		return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
+	}
+
+	// Wrong username or password on login; without this handler it would surface as a 500
+	@ExceptionHandler(BadCredentialsException.class)
+	public ProblemDetail handleBadCredentials(BadCredentialsException ex) {
+		return ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, ex.getMessage());
 	}
 
 	// @Valid body errors (MethodArgumentNotValidException) and bad query params both extend BindException
