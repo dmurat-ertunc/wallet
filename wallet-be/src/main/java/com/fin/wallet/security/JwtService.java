@@ -69,7 +69,9 @@ public class JwtService {
         return Jwts.parser()
                 .verifyWith(key) // "imzayı bu anahtarla kontrol et."
                 .build()
-                .parseSignedClaims(token) // asıl kontrol burada yapılır. İmza tutmuyorsa ya da exp geçmişse exception fırlatır. Ayrıca if yazmana gerek yok
+                // asıl kontrol burada yapılır. İmza tutmuyorsa ya da exp geçmişse exception fırlatır. Ayrıca if yazmana gerek yok
+                // mesela token süresi bitmiş ise ExpiredJwtException hatası fırlatıyor
+                .parseSignedClaims(token)
                 .getPayload()
                 .getSubject();  // her şey yolundaysa payload'dan sub değerini, yani kullanıcı adını alır.
     }

@@ -15,6 +15,7 @@ import java.util.List;
 public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
+    //Kullanıcı adını alıp kullanıcıyı veritabanında bulur ve Spring Security'nin anladığı biçime çevirir.
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUserName(username)
@@ -24,7 +25,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .username(user.getUserName())
                 .password(user.getPassword())
                 .authorities(List.of())
-                .disabled(!user.isActive())
+                .disabled(!user.isActive()) // kullanıcı aktif olma zorunluluğu
                 .build();
     }
 

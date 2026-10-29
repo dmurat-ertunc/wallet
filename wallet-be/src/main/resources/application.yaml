@@ -36,4 +36,6 @@ app:
     # [Convert]::ToBase64String((1..32 | ForEach-Object { Get-Random -Maximum 256 }))
     secret: ${JWT_SECRET:N7LpnYfTv5TAw349yiPcFn8MlnojcKZTjHOPsmdEVfM=}
     # Token'ın geçerlilik süresi (milisaniye): 86400000 = 24 saat
-    expiration-ms: 86400000
+    expiration-ms: 10000
+#    expiration-ms: 10000   10 saniye token süresi denemek için
+

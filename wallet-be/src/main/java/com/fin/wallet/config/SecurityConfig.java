@@ -59,6 +59,7 @@ public class SecurityConfig {
 //        Hatırlarsan 401/403 farkını anlatırken bu tuzaktan bahsetmiştim:
 //        bu satır olmadan Spring bazı durumlarda 403 döner ve mobil taraf "token'ın yok" ile "yetkin yok" durumlarını ayırt edemez.
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
+                //Bu filtreyi zincire ekle ve UsernamePasswordAuthenticationFilter'dan önce çalıştır.
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 //        "Benim filtremi zincire ekle, Spring'in standart kullanıcı adı/şifre filtresinden önce çalışsın."
 //        Böylece yetki kontrolüne gelindiğinde kimlik kutusu zaten dolu olur.
