@@ -31,6 +31,12 @@ public class GlobalExceptionHandler {
 		return ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, ex.getMessage());
 	}
 
+	// 400 değil 401: mobil uygulama bunu "oturum bitti, tekrar giriş yap" olarak yorumlar
+	@ExceptionHandler(InvalidRefreshTokenException.class)
+	public ProblemDetail handleInvalidRefreshToken(InvalidRefreshTokenException ex) {
+		return ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, ex.getMessage());
+	}
+
 	// @Valid body errors (MethodArgumentNotValidException) and bad query params both extend BindException
 	@ExceptionHandler(BindException.class)
 	public ProblemDetail handleValidation(BindException ex) {

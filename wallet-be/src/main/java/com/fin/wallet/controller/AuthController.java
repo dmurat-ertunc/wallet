@@ -2,6 +2,7 @@ package com.fin.wallet.controller;
 
 import com.fin.wallet.dto.auth.AuthResponse;
 import com.fin.wallet.dto.auth.LoginRequest;
+import com.fin.wallet.dto.auth.RefreshRequest;
 import com.fin.wallet.dto.auth.RegisterRequest;
 import com.fin.wallet.service.AuthService;
 import jakarta.validation.Valid;
@@ -13,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-// Herkese açık giriş/kayıt uç noktaları (SecurityConfig'te /api/auth/** permitAll).
-// İstek gövdeleri şifre içerdiği için burada bilerek log yazılmaz.
+// Herkese açık giriş/kayıt/yenileme/çıkış uç noktaları (SecurityConfig'te /api/auth/** permitAll).
+// İstek gövdeleri şifre veya refresh token içerdiği için burada bilerek log yazılmaz.
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -30,6 +31,19 @@ public class AuthController {
 	@PostMapping("/register")
 	public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(request));
+	}
+
+	// Access token'ın süresi dolduğu için çağrılır; bu yüzden access token istemez (permitAll), koruma refresh token'ın kendisi
+	@PostMapping("/refresh")
+	public ResponseEntity<AuthResponse> refresh(@Valid @RequestBody RefreshRequest request) {
+		return ResponseEntity.ok(authService.refresh(request));
+	}
+
+	// Dönecek bir veri yok: 204 No Content
+	@PostMapping("/logout")
+	public ResponseEntity<Void> logout(@Valid @RequestBody RefreshRequest request) {
+		authService.logout(request);
+		return ResponseEntity.noContent().build();
 	}
 
 }

@@ -15,7 +15,15 @@ export interface RegisterRequest {
   password: string;
 }
 
-// Başarılı giriş veya kayıtta dönen cevap; token sonraki her isteğin Authorization başlığına eklenir
+// Başarılı giriş, kayıt veya yenilemede dönen cevap.
+// accessToken: kısa ömürlü (15 dk) JWT, sonraki her isteğin Authorization başlığına eklenir.
+// refreshToken: uzun ömürlü (30 gün), sadece /auth/refresh ve /auth/logout'a gönderilir.
 export interface AuthResponse {
-  token: string;
+  accessToken: string;
+  refreshToken: string;
+}
+
+// POST /api/auth/refresh ve /api/auth/logout gövdesi
+export interface RefreshRequest {
+  refreshToken: string;
 }

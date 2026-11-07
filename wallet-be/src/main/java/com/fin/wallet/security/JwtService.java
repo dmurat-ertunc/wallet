@@ -7,18 +7,22 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import java.time.Duration;
 import java.util.Date;
 
 @Service  //Spring bu sınıftan bir nesne oluşturur ve isteyen sınıflara verir.
 public class JwtService {
     private final SecretKey key;
 
-    private final long expirationMs;
+    // Access token'ın yaşam süresi. Kısa tutulur (15 dk): çalınırsa saldırgan en fazla bu kadar kullanabilir.
+    // Süresi dolunca mobil uygulama refresh token ile yenisini alır.
+    private final Duration accessTokenTtl;
 
     public JwtService(@Value("${app.jwt.secret}") String secret, //application.yaml'daki değeri okuyup parametreye koyar. WebConfig'te de aynısını yapmıştın
-                      @Value("${app.jwt.expiration-ms}") long expirationMs) {
-        this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret)); //yaml'daki yazı hâlindeki anahtarı byte'lara çevirir.
-        this.expirationMs = expirationMs; //bu byte'lardan imzalamada kullanılacak anahtar nesnesini üretir. Anahtar 256 bitten kısaysa burada hata verir.
+                      // Spring, yaml'daki "15m", "30s", "24h" gibi yazıları otomatik olarak Duration'a çevirir
+                      @Value("${app.jwt.access-token-ttl}") Duration accessTokenTtl) {
+        this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret)); //yaml'daki yazı hâlindeki anahtarı byte'lara çevirir, bu byte'lardan imzalamada kullanılacak anahtar nesnesini üretir. Anahtar 256 bitten kısaysa burada hata verir.
+        this.accessTokenTtl = accessTokenTtl;
     }
 
     public String generateToken(String userName) {
@@ -26,7 +30,7 @@ public class JwtService {
         return Jwts.builder()
                 .subject(userName) // token'ın kime ait olduğu. Payload'da "sub": "murat" olarak görünür.
                 .issuedAt(now) // üretilme zamanı ("iat").
-                .expiration(new Date(now.getTime() + expirationMs)) // şu an + 24 saat; bu süreden sonra token geçersiz olur ("exp").
+                .expiration(new Date(now.getTime() + accessTokenTtl.toMillis())) // şu an + access token süresi (15 dk); bu süreden sonra token geçersiz olur ("exp").
                 .signWith(key) //  gizli anahtarla imzalar.
                 .compact(); // hepsini xxxxx.yyyyy.zzzzz biçiminde tek bir yazıya çevirir.
     }
