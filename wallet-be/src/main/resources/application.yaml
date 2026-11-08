@@ -39,11 +39,11 @@ app:
 #    expiration-ms: 86400000
 #    expiration-ms: 10000   10 saniye token süresi denemek için
     # Access token'ın yaşam süresi. Kısa tutulur; süresi dolunca mobil refresh token ile yenisini alır.
-    access-token-ttl: 30s
+    access-token-ttl: 15m
   #    access-token-ttl: 30s   # refresh akışını test etmek için
   refresh-token:
     # Refresh token'ın yaşam süresi. Her refresh'te yenisi verildiği için (rotation)
     # oturum ancak bu kadar süre hiç kullanılmazsa düşer.
-    ttl: 30d
+    ttl: 3h
 
 
