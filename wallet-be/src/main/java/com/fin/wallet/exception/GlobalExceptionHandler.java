@@ -1,5 +1,6 @@
 package com.fin.wallet.exception;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@Slf4j
 // Converts exceptions thrown anywhere in the app into RFC 9457 "problem+json" responses
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -47,6 +49,16 @@ public class GlobalExceptionHandler {
 
 		ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "Validation failed");
 		problem.setProperty("errors", errors);
+		return problem;
+	}
+
+	@ExceptionHandler(BusinessException.class)
+	public ProblemDetail handleBusiness(BusinessException ex) {
+		ErrorCode errorCode = ex.getErrorCode();
+		log.error("Business error: code={}, message={}", errorCode, ex.getMessage());
+
+		ProblemDetail problem = ProblemDetail.forStatusAndDetail(errorCode.getStatus(), ex.getMessage());
+		problem.setProperty("code", errorCode.name());
 		return problem;
 	}
 

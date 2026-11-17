@@ -2,6 +2,8 @@ package com.fin.wallet.service.impl;
 
 import com.fin.wallet.dto.ExpenseDTO;
 import com.fin.wallet.entity.Expense;
+import com.fin.wallet.exception.BusinessException;
+import com.fin.wallet.exception.ErrorCode;
 import com.fin.wallet.exception.ResourceNotFoundException;
 import com.fin.wallet.mapper.ExpenseMapper;
 import com.fin.wallet.repository.ExpenseRepository;
@@ -12,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 // Every operation is scoped to the user in the JWT; the userId in the request body is ignored.
@@ -66,16 +69,28 @@ public class ExpenseServiceImpl implements ExpenseService {
 		return findOwnExpense(id).map(expenseMapper::toDto);
 	}
 
-	@Override
-	public void delete(Long id) {
-		log.debug("Request to delete Expense : {}", id);
-		if (!expenseRepository.existsByIdAndUserId(id, currentUserService.getCurrentUser().getId())) {
-			throw new ResourceNotFoundException(RESOURCE_NAME, id);
-		}
-		expenseRepository.deleteById(id);
-	}
+    private static final BigDecimal DELETE_LIMIT = new BigDecimal("100");
 
-	private Optional<Expense> findOwnExpense(Long id) {
+    @Override
+    public void delete(Long id) {
+        log.debug("Request to delete Expense : {}", id);
+
+        // Tek sorgu: hem var mı hem bu kullanıcının mı kontrol eder, entity'yi de getirir
+        Expense expense = expenseRepository
+                .findByIdAndUserId(id, currentUserService.getCurrentUser().getId())
+                .orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, id));
+
+        // İş kuralı: düz if, lambda içine gömülmez
+        if (expense.getAmount().compareTo(DELETE_LIMIT) > 0) {
+			throw new BusinessException(ErrorCode.EXPENSE_DELETE_LIMIT_EXCEEDED, DELETE_LIMIT);
+		}
+
+        // Elimizde entity var; deleteById tekrar SELECT atardı
+        expenseRepository.delete(expense);
+    }
+
+
+    private Optional<Expense> findOwnExpense(Long id) {
 		return expenseRepository.findByIdAndUserId(id, currentUserService.getCurrentUser().getId());
 	}
 
